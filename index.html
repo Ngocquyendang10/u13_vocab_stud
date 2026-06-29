@@ -951,7 +951,7 @@
             executeTTS(word);
         }
 
-        // --- ĐỘNG CƠ PHÁT ÂM TIẾNG HÀN CHUẨN MICROSOFT ---
+        // --- ĐOẠN CODE VÁ LỖI GIỌNG ROBOT - KHÔNG LÀM THAY ĐỔI CONTENT CỦA PEN ---
         function executeTTS(textToSpeak) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -959,14 +959,29 @@
                 utterance.lang = 'ko-KR';
                 utterance.rate = 0.85;
 
-                const voices = window.speechSynthesis.getVoices();
-                const preferredVoice = voices.find(voice => 
-                    (voice.name.includes('Microsoft') || voice.name.includes('Google')) && voice.lang.startsWith('ko')
-                ) || voices.find(voice => voice.lang.startsWith('ko'));
+                // Hàm nội bộ bốc giọng AI chuẩn
+                function setVoiceAndSpeak() {
+                    const voices = window.speechSynthesis.getVoices();
+                    const preferredVoice = voices.find(voice => 
+                        (voice.name.includes('Microsoft') || voice.name.includes('Google')) && voice.lang.startsWith('ko')
+                    ) || voices.find(voice => voice.lang.startsWith('ko'));
 
-                if (preferredVoice) utterance.voice = preferredVoice;
-                window.speechSynthesis.speak(utterance);
+                    if (preferredVoice) utterance.voice = preferredVoice;
+                    window.speechSynthesis.speak(utterance);
+                }
+
+                // Nếu trình duyệt chưa kịp nạp giọng, bắt nó đợi nạp xong (onvoiceschanged) rồi phát ngay giọng AI
+                if (window.speechSynthesis.getVoices().length === 0) {
+                    window.speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
+                } else {
+                    setVoiceAndSpeak();
+                }
             }
+        }
+
+        // Lệnh ép trình duyệt khởi động và nạp sẵn giọng AI ngay khi học viên vừa mở trang web
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
         }
 
         function playAudio(type) {
