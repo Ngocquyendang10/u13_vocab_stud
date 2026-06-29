@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ngoc Quyen's Classroom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- HỆ THỐNG MÀU NEUMORPHISM & POINT COLOR #614CFF --- */
+        :root {
+            --bg-cloud-dancer: #f0efe9; /* Màu nền trắng kem Cloud Dancer */
+            --purple-point: #614CFF;     /* Màu point xanh tím của Pen */
+            
+            /* Công thức đổ bóng Neumorphism độc quyền */
+            --nm-shadow-out: 8px 8px 16px #dbdad4, -8px -8px 16px #ffffff;
+            --nm-shadow-in: inset 6px 6px 12px #dbdad4, inset -6px -6px 12px #ffffff;
+            --point-shadow: 4px 4px 10px rgba(97, 77, 255, 0.3), -4px -4px 10px rgba(255, 255, 255, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Chiron GoRound TC', 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-cloud-dancer);
+            color: #3a3935;
+            padding: 10px; /* Tối ưu padding viền nhỏ gọn full màn hình */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1350px;
+            margin: 0 auto;
+        }
+
+        /* --- 1. THANH TAB CÔNG CỤ & TIÊU ĐỀ --- */
+        .toolbar-tab {
+            background: var(--bg-cloud-dancer);
+            border-radius: 20px;
+            padding: 15px 25px;
+            box-shadow: var(--nm-shadow-in);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .header-area {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .brand-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--purple-point);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-subtitle {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #8c8b84;
+            text-transform: uppercase;
+        }
+
+        .menu-items {
+            display: flex;
+            gap: 12px;
+        }
+
+        .menu-btn {
+            background: var(--bg-cloud-dancer);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: var(--nm-shadow-out);
+            cursor: pointer;
+            font-weight: 700;
+            color: #605f5a;
+            transition: all 0.2s ease;
+        }
+
+        .menu-btn.active {
+            box-shadow: var(--nm-shadow-in);
+            color: var(--purple-point);
+        }
+
+        /* Khung bọc khu vực làm việc */
+        .workspace-layout {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* --- KHU VỰC CHI TIẾT & HÌNH ẢNH TAB 1 & 2 --- */
+        .vocab-detail-section {
+            background: var(--bg-cloud-dancer);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: var(--nm-shadow-out);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .image-container {
+            width: 100%;
+            max-width: 450px; 
+            aspect-ratio: 16 / 9;
+            background: var(--bg-cloud-dancer);
+            border-radius: 20px;
+            box-shadow: var(--nm-shadow-out);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+            overflow: hidden;
+            transition: max-width 0.2s ease;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .korean-word {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #20201e;
+        }
+
+        .btn-audio-main {
+            background: var(--purple-point);
+            color: #ffffff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--point-shadow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-row {
+            width: 100%;
+            max-width: 650px;
+            background: var(--bg-cloud-dancer);
+            padding: 16px 22px;
+            border-radius: 16px;
+            box-shadow: var(--nm-shadow-out);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: var(--purple-point);
+            white-space: nowrap;
+            font-size: 0.95rem;
+            width: 90px; 
+        }
+
+        .info-content {
+            flex-grow: 1;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #4a4943;
+            text-align: left;
+            padding-left: 16px;
+        }
+
+        /* --- KHU VỰC SƠ ĐỒ MIND MAP PHÂN NHÁNH NGANG TAB 1, 2 --- */
+        .mindmap-section {
+            background: var(--bg-cloud-dancer);
+            border-radius: 24px;
+            padding: 30px 25px;
+            box-shadow: var(--nm-shadow-out);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .root-node {
+            background: var(--bg-cloud-dancer);
+            padding: 14px 28px;
+            border-radius: 16px;
+            box-shadow: var(--nm-shadow-out);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--purple-point);
+            border: 2px solid rgba(97, 77, 255, 0.15);
+            text-align: center;
+        }
+
+        .mindmap-branches-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+        }
+
+        @media (max-width: 850px) {
+            .mindmap-branches-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .branch-column {
+            background: var(--bg-cloud-dancer);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: var(--nm-shadow-in);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            align-self: start;
+            width: 100%;
+        }
+
+        .branch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .branch-title-text {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #4a4943;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toggle-icon {
+            width: 26px;
+            height: 26px;
+            background: var(--bg-cloud-dancer);
+            border-radius: 50%;
+            box-shadow: var(--nm-shadow-out);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--purple-point);
+            transition: transform 0.2s;
+        }
+
+        .branch-column.collapsed .branch-content {
+            display: none !important;
+        }
+        .branch-column.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .branch-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .node-item {
+            background: var(--bg-cloud-dancer);
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: var(--nm-shadow-out);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #55544e;
+            transition: all 0.2s;
+            text-align: left;
+            user-select: none;
+        }
+
+        .node-item.selected {
+            box-shadow: var(--nm-shadow-in);
+            color: var(--purple-point);
+        }
+
+        /* Ô nhập liệu Tab 2 (학생본) */
+        .student-quiz-area {
+            display: none;
+            width: 100%;
+        }
+
+        .student-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .student-input-box {
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--bg-cloud-dancer);
+            box-shadow: inset 2px 2px 5px #dbdad4, inset -2px -2px 5px #ffffff;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #3a3935;
+            outline: none;
+        }
+
+        .viet-hint {
+            font-size: 0.75rem;
+            color: #8c8b84;
+            font-weight: 400;
+            display: none;
+            padding-left: 2px;
+        }
+
+        .node-item.active-quiz .viet-hint {
+            display: block;
+        }
+
+        /* Phụ bọc lớp nhánh con quà tặng cứng ở Tab 1, 2 */
+        .sub-branch-parent {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(97, 77, 255, 0.03);
+            border-radius: 14px;
+            padding: 4px;
+            width: 100%;
+        }
+
+        .parent-node {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .parent-toggle-icon {
+            font-size: 0.7rem;
+            color: #8c8b84;
+            margin-right: 10px;
+            transition: transform 0.2s;
+        }
+
+        .sub-branch-children {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-left: 20px;
+        }
+
+        .sub-branch-parent.collapsed-sub .sub-branch-children {
+            display: none !important;
+        }
+        .sub-branch-parent.collapsed-sub .parent-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        /* ================= VÁ SỬA TRIỆT ĐỂ KHÔNG GIAN HIỂN THỊ STICKY CHO TAB 3 ================= */
+        .practice-tab-container {
+            display: none; 
+            width: 100%;
+            position: relative; /* Gốc cố định tạo bệ đỡ cho Sticky bên phải bám vào */
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        /* Bộ kích hoạt ép hiển thị Flex 4:6 nhịp nhàng chuẩn kỹ thuật */
+        #areaTab3[style*="display: flex"] {
+            display: flex !important;
+        }
+
+        /* Danh mục List Folder cuộn dọc tự do bên trái (Chiếm 45%) */
+        .tab3-list-side {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tab3-list-side .branch-column {
+            width: 100%;
+            box-shadow: var(--nm-shadow-out);
+        }
+
+        /* Khung hình ảnh ghim cố định STICKY bên phải màn hình (Chiếm 55%) */
+        .tab3-sticky-image-side {
+            width: 55%;
+            position: sticky;
+            top: 15px; /* Luôn giữ chặt cách mép màn hình trên 15px chống trôi bối cảnh */
+            background: var(--bg-cloud-dancer);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: var(--nm-shadow-out);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .sticky-box-169 {
+            width: 100%;
+            max-width: 580px;
+            aspect-ratio: 16 / 9;
+            background: var(--bg-cloud-dancer);
+            border-radius: 20px;
+            box-shadow: var(--nm-shadow-in);
+            padding: 8px;
+            overflow: hidden;
+        }
+
+        .sticky-box-169 img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        /* Giao diện card bài tập 2 dòng tinh tế của Tab 3 */
+        .practice-card-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .practice-row-top {
+            font-size: 0.95rem;
+            color: #3a3935;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        .practice-row-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            min-height: 32px;
+        }
+
+        .practice-korean-hidden {
+            color: var(--purple-point);
+            font-weight: 700;
+            font-size: 0.95rem;
+            visibility: hidden;
+        }
+
+        .node-item.flipped-practice .practice-korean-hidden {
+            visibility: visible;
+        }
+
+        /* Nút loa vector phẳng SVG mỏng nhẹ cao cấp tiệp hoàn toàn vào nền */
+        .btn-audio-mini {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Chuyển động rung nhấp nháy đỏ khi làm bài sai chính tả */
+        @keyframes shakeBounce {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .shake-error {
+            animation: shakeBounce 0.4s ease-in-out;
+            border: 1px solid red !important;
+            box-shadow: inset 2px 2px 5px rgba(255,0,0,0.1) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lockScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0efe9; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;">
+        <div style="padding: 35px; border-radius: 24px; box-shadow: 8px 8px 16px #dbdad4, -8px -8px 16px #ffffff; text-align: center; max-width: 400px; width: 90%;">
+            <h2 style="color: #614CFF; margin-bottom: 10px; font-size: 1.5rem;">Ngoc Quyen's Classroom</h2>
+            <p id="lockMessage" style="color: #605f5a; font-size: 0.9rem; margin-bottom: 25px;">Vui lòng nhập mật khẩu để vào bài học</p>
+            <input type="password" id="passwordInput" placeholder="Nhập mật khẩu..." style="width: 100%; padding: 14px; border: none; border-radius: 12px; background: #f0efe9; box-shadow: inset 4px 4px 8px #dbdad4, inset -4px -4px 8px #ffffff; font-size: 1rem; color: #3a3935; outline: none; text-align: center; margin-bottom: 20px;">
+            <button onclick="checkAccess()" style="width: 100%; background: #614CFF; color: white; border: none; padding: 12px; border-radius: 16px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 4px 4px 10px rgba(97, 77, 255, 0.3);">XÁC NHẬN</button>
+        </div>
+    </div>
+
+    <div class="toolbar-tab">
+        <div class="header-area">
+            <div class="brand-title">Ngoc Quyen's Classroom</div>
+            <div class="brand-subtitle">THTH 1_Unit 13 (생일)</div>
+        </div>
+        <div class="menu-items">
+            <button class="menu-btn active" id="btnTab1" onclick="switchTab(1)">어휘</button>
+            <button class="menu-btn" id="btnTab2" onclick="switchTab(2)">학생본</button>
+            <button class="menu-btn" id="btnTab3" onclick="switchTab(3)">연습</button>
+        </div>
+    </div>
+
+    <div class="workspace-layout" id="areaTab12">
+        
+        <div class="vocab-detail-section" id="detailSection">
+            <div class="image-container" id="mainImageContainer">
+                <img id="vocabImage" src="images/saengil.png" alt="생일" onerror="this.src='https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=700&h=400&fit=crop'">
+            </div>
+            <div class="korean-word" id="vocabTitle">생일</div>
+            <button class="btn-audio-main" id="mainAudioBtn" onclick="playAudio('word')"><span>🔊</span> Phát âm từ</button>
+            <div class="info-row" id="meaningRow"><div class="info-label">Ý nghĩa</div><div class="info-content" id="vocabMeaning">Sinh nhật</div><div style="width:34px;"></div></div>
+            <div class="info-row" id="exampleRow"><div class="info-label">Ví dụ</div><div class="info-content" id="vocabExample">...</div><button class="btn-audio-mini" onclick="playAudio('example')">🔊</button></div>
+        </div>
+
+        <div class="mindmap-section">
+            <div class="root-node">생일 · 생신 (Sinh nhật)</div>
+            <div class="mindmap-branches-grid">
+                
+                <div class="branch-column" id="col1">
+                    <div class="branch-header" onclick="toggleBranch('col1')"><div class="branch-title-text">🚀 Khởi đầu & Chuẩn bị</div><div class="toggle-icon">▼</div></div>
+                    <div class="branch-content">
+                        <div class="node-item selected" id="node_생일" onclick="handleStaticNodeClick('생일')">
+                            <span class="normal-txt">생일</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_생일" placeholder="..." onfocus="focusQuiz('생일')" onchange="checkQuiz('생일')"><span class="viet-hint">Sinh nhật <span id="ans_생일" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 생일)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_생신" onclick="handleStaticNodeClick('생신')">
+                            <span class="normal-txt">생신</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_생신" placeholder="..." onfocus="focusQuiz('생신')" onchange="checkQuiz('생신')"><span class="viet-hint">Ngày sinh / Sinh nhật (Kính ngữ) <span id="ans_생신" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 생신)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_한 살을 먹다" onclick="handleStaticNodeClick('한 살을 먹다')">
+                            <span class="normal-txt">한 살을 먹다</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_한 살을 먹다" placeholder="..." onfocus="focusQuiz('한 살을 먹다')" onchange="checkQuiz('한 살을 먹다')"><span class="viet-hint">Tăng thêm 1 tuổi <span id="ans_한 살을 먹다" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 한 살을 먹다)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_초대" onclick="handleStaticNodeClick('초대')">
+                            <span class="normal-txt">초대</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_초대" placeholder="..." onfocus="focusQuiz('초대')" onchange="checkQuiz('초대')"><span class="viet-hint">Lời mời / Sự mời mọc <span id="ans_초대" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 초대)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_카드" onclick="handleStaticNodeClick('카드')">
+                            <span class="normal-txt">카드</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_카드" placeholder="..." onfocus="focusQuiz('카드')" onchange="checkQuiz('카드')"><span class="viet-hint">Thiệp <span id="ans_카드" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 카드)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_잔치" onclick="handleStaticNodeClick('잔치')">
+                            <span class="normal-txt">잔치</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_잔치" placeholder="..." onfocus="focusQuiz('잔치')" onchange="checkQuiz('잔치')"><span class="viet-hint">Tiệc / Yến tiệc <span id="ans_잔치" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 잔치)</span></span></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="branch-column" id="col2">
+                    <div class="branch-header" onclick="toggleBranch('col2')"><div class="branch-title-text">🎂 Trong buổi tiệc</div><div class="toggle-icon">▼</div></div>
+                    <div class="branch-content">
+                        <div class="node-item" id="node_생일 파티를 하다" onclick="handleStaticNodeClick('생일 파티를 하다')">
+                            <span class="normal-txt">생일 파티를 하다</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_생일 파티를 하다" placeholder="..." onfocus="focusQuiz('생일 파티를 하다')" onchange="checkQuiz('생일 파티를 하다')"><span class="viet-hint">Tổ chức tiệc sinh nhật <span id="ans_생일 파티를 하다" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 생일 파티를 하다)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_케이크" onclick="handleStaticNodeClick('케이크')">
+                            <span class="normal-txt">케이크</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_케이크" placeholder="..." onfocus="focusQuiz('케이크')" onchange="checkQuiz('케이크')"><span class="viet-hint">Bánh kem / Bánh gato <span id="ans_케이크" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 케이크)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_축하 노래" onclick="handleStaticNodeClick('축하 노래')">
+                            <span class="normal-txt">축하 노래</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_축하 노래" placeholder="..." onfocus="focusQuiz('축하 노래')" onchange="checkQuiz('축하 노래')"><span class="viet-hint">Bài hát chúc mừng <span id="ans_축하 노래" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 축하 노래)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_미역국을 만들어 주다" onclick="handleStaticNodeClick('미역국을 만들어 주다')">
+                            <span class="normal-txt">미역국을 만들어 주다</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_미역국을 만들어 주다" placeholder="..." onfocus="focusQuiz('미역국을 만들어 주다')" onchange="checkQuiz('미역국을 만들어 주다')"><span class="viet-hint">Nấu canh rong biển cho (ai đó) <span id="ans_미역국을 만들어 주다" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 미역국을 만들어 주다)</span></span></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="branch-column" id="col3">
+                    <div class="branch-header" onclick="toggleBranch('col3')"><div class="branch-title-text">🎁 Quà cáp & Hành động</div><div class="toggle-icon">▼</div></div>
+                    <div class="branch-content">
+                        <div class="node-item" id="node_선元的 고르다" onclick="handleStaticNodeClick('선물을 고르다')">
+                            <span class="normal-txt">선물을 고르다</span>
+                            <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_선물을 고르다" placeholder="..." onfocus="focusQuiz('선물을 고르다')" onchange="checkQuiz('선물을 고르다')"><span class="viet-hint">Chọn quà <span id="ans_선물을 고르다" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 선물을 고르다)</span></span></div></div>
+                        </div>
+
+                        <div class="sub-branch-parent collapsed-sub" id="subGift">
+                            <div class="node-item parent-node" onclick="handleParentClick(event)">
+                                <span class="normal-txt">생일 선물</span>
+                                <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_생일 선물" placeholder="..." onfocus="focusQuiz('생일 선물')" onchange="checkQuiz('생일 선물')"><span class="viet-hint">Quà sinh nhật <span id="ans_생일 선물" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 생일 선물)</span></span></div></div>
+                                <span class="parent-toggle-icon">▼</span>
+                            </div>
+                            <div class="sub-branch-children">
+                                <div class="node-item" id="node_지갑" onclick="handleStaticNodeClick('지갑')">
+                                    <span class="normal-txt">지갑</span>
+                                    <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_지갑" placeholder="..." onfocus="focusQuiz('지갑')" onchange="checkQuiz('지갑')"><span class="viet-hint">Cái ví / Bóp <span id="ans_지갑" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 지갑)</span></span></div></div>
+                                </div>
+                                <div class="node-item" id="node_화장품" onclick="handleStaticNodeClick('화장품')">
+                                    <span class="normal-txt">화장품</span>
+                                    <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_화장품" placeholder="..." onfocus="focusQuiz('화장품')" onchange="checkQuiz('화장품')"><span class="viet-hint">Mỹ phẩm <span id="ans_화장품" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 화장품)</span></span></div></div>
+                                </div>
+                                <div class="node-item" id="node_손수건" onclick="handleStaticNodeClick('손수건')">
+                                    <span class="normal-txt">손수건</span>
+                                    <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_손수건" placeholder="..." onfocus="focusQuiz('손수건')" onchange="checkQuiz('손수건')"><span class="viet-hint">Khăn tay <span id="ans_손수건" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 손수건)</span></span></div></div>
+                                </div>
+                                <div class="node-item" id="node_넥타i" onclick="handleStaticNodeClick('넥타i')">
+                                    <span class="normal-txt">넥타i</span>
+                                    <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_넥타i" placeholder="..." onfocus="focusQuiz('넥타i')" onchange="checkQuiz('넥타i')"><span class="viet-hint">Cà vạt <span id="ans_넥타i" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 넥타i)</span></span></div></div>
+                                </div>
+                                <div class="node-item" id="node_귀걸i" onclick="handleStaticNodeClick('귀걸i')">
+                                    <span class="normal-txt">귀걸i</span>
+                                    <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_귀걸i" placeholder="..." onfocus="focusQuiz('귀걸i')" onchange="checkQuiz('귀걸i')"><span class="viet-hint">Hoa tai / Bông tai <span id="ans_귀걸i" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 귀걸i)</span></span></div></div>
+                                </div>
+                                <div class="node-item" id="node_목걸i" onclick="handleStaticNodeClick('목걸i')">
+                                    <span class="normal-txt">목걸i</span>
+                                    <div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_목걸i" placeholder="..." onfocus="focusQuiz('목걸i')" onchange="checkQuiz('목걸i')"><span class="viet-hint">Dây chuyền / Vòng cổ <span id="ans_목걸i" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 목걸i)</span></span></div></div>
+                                </div>
+                                <div class="node-item" id="node_반지" onclick="handleStaticNodeClick('반지')"><span class="normal-txt">반지</span><div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_반지" placeholder="..." onfocus="focusQuiz('반지')" onchange="checkQuiz('반지')"><span class="viet-hint">Nhẫn <span id="ans_반지" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 반지)</span></span></div></div></div>
+                                <div class="node-item" id="node_꽃다발" onclick="handleStaticNodeClick('꽃다발')"><span class="normal-txt">꽃다발</span><div class="student-quiz-area" onclick="event.stopPropagation()"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_꽃다발" placeholder="..." onfocus="focusQuiz('꽃다발')" onchange="checkQuiz('꽃다발')"><span class="viet-hint">Lãng hoa / Bó hoa <span id="ans_꽃다발" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 꽃다발)</span></span></div></div></div>
+                            </div>
+                        </div>
+
+                        <div class="node-item" id="node_선물을 주다" onclick="handleStaticNodeClick('선물을 주다')">
+                            <span class="normal-txt">선물을 주다</span>
+                            <div class="student-quiz-area"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_선물을 주다" placeholder="..." onfocus="focusQuiz('선물을 주다')" onchange="checkQuiz('선물을 주다')"><span class="viet-hint">Tặng quà <span id="ans_선물을 주다" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 선물을 주다)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_선물을 드리다" onclick="handleStaticNodeClick('선물을 드리다')">
+                            <span class="normal-txt">선물을 드리다</span>
+                            <div class="student-quiz-area"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_선물을 드리다" placeholder="..." onfocus="focusQuiz('선물을 드리다')" onchange="checkQuiz('선물을 드리다')"><span class="viet-hint">Kính tặng quà (Kính ngữ) <span id="ans_선물을 드리다" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 선물을 드리다)</span></span></div></div>
+                        </div>
+                        <div class="node-item" id="node_선물을 받다" onclick="handleStaticNodeClick('선물을 받다')">
+                            <span class="normal-txt">선물을 받다</span>
+                            <div class="student-quiz-area"><div class="student-input-container"><input type="text" class="student-input-box" id="quiz_선물을 받다" placeholder="..." onfocus="focusQuiz('선물을 받다')" onchange="checkQuiz('선물을 받다')"><span class="viet-hint">Nhận quà <span id="ans_선물을 받다" style="color:#614CFF; display:none; font-size:0.75rem;">(ĐA: 선물을 받다)</span></span></div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="practice-tab-container" id="areaTab3">
+        <div class="tab3-list-side" id="practiceFolderArea"></div>
+        
+        <div class="tab3-sticky-image-side">
+            <div class="sticky-box-169">
+                <img id="practiceVocabImage" src="images/saengil.png" alt="Gợi ý" onerror="this.src='https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=700&h=400&fit=crop'">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA DICTIONARY ĐỒNG BỘ CHUẨN XỊN THƯƠNG HIỆU ---
+        const vocabData = {
+            "생일": { column: 1, meaning: "Sinh nhật", example: "오늘 제 친구의 생일입니다.", img: "images/saengil.png", placeholder: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=700&h=400&fit=crop" },
+            "생신": { column: 1, meaning: "Ngày sinh / Sinh nhật (Kính ngữ)", example: "할머니 생신은 10월입니다.", img: "images/saengsin.png", placeholder: "https://images.unsplash.com/photo-1531956531700-403419f90957?w=700&h=400&fit=crop" },
+            "한 살을 먹다": { column: 1, meaning: "Tăng thêm 1 tuổi", example: "새해에 우리는 한 살을 먹습니다.", img: "images/han-sal-eul-meokda.png", placeholder: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=700&h=400&fit=crop" },
+            "초대": { column: 1, meaning: "Lời mời", example: "한국 선생님을 초대를 할 거예요.", img: "images/chodae.png", placeholder: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=700&h=400&fit=crop" },
+            "카드": { column: 1, meaning: "Thiệp", example: "이것은 사촌 언니의 생일 카드입니다.", img: "images/kadeu.png", placeholder: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=700&h=400&fit=crop" },
+            "잔치": { column: 1, meaning: "Tiệc / Yến tiệc", example: "우리 집에서 생일 잔치를 하겠습니다.", img: "images/janchi.png", placeholder: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=700&h=400&fit=crop" },
+            
+            "생일 파티를 하다": { column: 2, meaning: "Tổ chức tiệc sinh nhật", example: "토요일 저녁에 생일 파티를 할 거예요.", img: "images/saengil-patireul-hada.png", placeholder: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=700&h=400&fit=crop" },
+            "케이크": { column: 2, meaning: "Bánh kem / Bánh gato", example: "식당에서 케이크를 먹고 싶습니다.", img: "images/keikeu.png", placeholder: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=400&fit=crop" },
+            "축하 노래": { column: 2, meaning: "Bài hát chúc mừng", example: "식당에서 축하 노래를 듣습니다.", img: "images/chuka-norae.png", placeholder: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=700&h=400&fit=crop" },
+            "미역국을 만들어 주다": { column: 2, meaning: "Nấu canh rong biển cho (ai đó)", example: "어머니가 저한테 미역국을 만들어 주셨습니다.", img: "images/miyeokguk-eul-mandeurea-juda.png", placeholder: "https://images.unsplash.com/photo-1547592180-85f173990554?w=700&h=400&fit=crop" },
+            
+            "선물을 고르다": { column: 3, meaning: "Chọn quà", example: "내일 백화점에서 선물을 고릅시다.", img: "images/seonmul-eul-goreuda.png", placeholder: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=700&h=400&fit=crop" },
+            "생일 선물": { column: 3, isParent: true, meaning: "Quà sinh nhật", example: "생일 선물이 많고 예뻐요.", img: "images/saengil-seonmul.png", placeholder: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=700&h=400&fit=crop" },
+            "지갑": { column: 3, isChild: true, meaning: "Cái ví", example: "그 지갑은 너무 비쌉니다.", img: "images/jigap.png", placeholder: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=700&h=400&fit=crop" },
+            "화장품": { column: 3, isChild: true, meaning: "Mỹ phẩm", example: "저 화장대 위에 화장품이 많습니다.", img: "images/hwajangpum.png", placeholder: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=700&h=400&fit=crop" },
+            "손수건": { column: 3, isChild: true, meaning: "Khăn tay", example: "가방 안에 손수건이 있습니다.", img: "images/sonsugeon.png", placeholder: "https://images.unsplash.com/photo-1606141380313-0937a3044033?w=700&h=400&fit=crop" },
+            "넥타이": { column: 3, isChild: true, meaning: "Cà vạt", example: "아버지는 오늘 넥타이를 안 매셨습니다.", img: "images/nektai.png", placeholder: "https://images.unsplash.com/photo-1589756823851-fe163d995666?w=700&h=400&fit=crop" },
+            "귀걸이": { column: 3, isChild: true, meaning: "Hoa tai / Bông tai", example: "이 귀걸이는 얼마예요?", img: "images/gwideori.png", placeholder: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=700&h=400&fit=crop" },
+            "목걸이": { column: 3, isChild: true, meaning: "Dây chuyền / Vòng cổ", example: "이 목걸이를 살래요?.", img: "images/mokgeori.png", placeholder: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=700&h=400&fit=crop" },
+            "반지": { column: 3, isChild: true, meaning: "Nhẫn", example: "저 가게에서 반지를 고르고 싶습니다.", img: "images/banji.png", placeholder: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=700&h=400&fit=crop" },
+            "꽃다발": { column: 3, isChild: true, meaning: "Bó hoa", example: "(꽃집에서) 꽃다발 하나 주세요.", img: "images/kkotdabal.png", placeholder: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=700&h=400&fit=crop" },
+            "선물을 주다": { column: 3, meaning: "Tặng quà", example: "친구들은 저한테 선물을 줄 거예요.", img: "images/seonmul-eul-juda.png", placeholder: "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=700&h=400&fit=crop" },
+            "선물을 드리다": { column: 3, meaning: "Kính tặng quà (Kính ngữ)", example: "조카가 저한테 선물을 드리고 싶어합니다.", img: "images/seonmul-eul-deurida.png", placeholder: "https://images.unsplash.com/photo-1543157145-f78c636d023d?w=700&h=400&fit=crop" },
+            "선물을 받다": { column: 3, meaning: "Nhận quà", example: "어제 할머니의 선물을 받았습니다.", img: "images/seonmul-eul-batda.png", placeholder: "https://images.unsplash.com/photo-1608755728617-aefab37d2edd?w=700&h=400&fit=crop" }
+        };
+
+        // Đồng bộ key lệch chính tả
+        vocabData["생일 파티를 하다"] = vocabData["생일 파티를 하다"] || vocabData["생일 파티를 하다"];
+        vocabData["선물을 고르다"] = vocabData["선물을 고르다"];
+        vocabData["선물을 고르다"] = vocabData["선물을 고르다"];
+
+        // --- HÀM KHỞI TẠO CÂY THƯ MỤC FOLDER CHỈ CHO RIÊNG TAB 3 ---
+        function buildTab3FolderStructure() {
+            const folderArea = document.getElementById('practiceFolderArea');
+            folderArea.innerHTML = ''; 
+
+            const branchTitles = ["🚀 Khởi đầu & Chuẩn bị", "🎂 Trong buổi tiệc", "🎁 Quà cáp & Hành động"];
+            
+            for (let i = 1; i <= 3; i++) {
+                let columnWrapper = document.createElement('div');
+                columnWrapper.className = 'branch-column';
+                columnWrapper.id = 'prac_col_' + i;
+                
+                let headerHTML = `
+                    <div class="branch-header" onclick="toggleBranch('prac_col_${i}')">
+                        <div class="branch-title-text">${branchTitles[i-1]}</div>
+                        <div class="toggle-icon">▼</div>
+                    </div>
+                    <div class="branch-content" id="prac_content_${i}"></div>`;
+                
+                columnWrapper.innerHTML = headerHTML;
+                folderArea.appendChild(columnWrapper);
+            }
+
+            const col3Content = document.getElementById('prac_content_3');
+            let subGiftWrapper = document.createElement('div');
+            subGiftWrapper.className = 'sub-branch-parent collapsed-sub';
+            subGiftWrapper.id = 'prac_subGift';
+            subGiftWrapper.innerHTML = `
+                <div class="node-item parent-node" onclick="toggleTab3ParentFolder(event)">
+                    <div class="practice-card-layout">
+                        <div class="practice-row-top">Quà sinh nhật</div>
+                        <div class="practice-row-bottom">
+                            <span id="prac_text_생일 선물" class="practice-korean-hidden">생일 선물</span>
+                            <button class="btn-audio-mini" onclick="playDirectAudio(event, '생일 선물')"></button>
+                        </div>
+                    </div>
+                    <span class="parent-toggle-icon">▼</span>
+                </div>
+                <div class="sub-branch-children" id="prac_subChildrenArea"></div>`;
+            
+            col3Content.appendChild(subGiftWrapper);
+            const pracSubChildrenArea = document.getElementById('prac_subChildrenArea');
+
+            Object.keys(vocabData).forEach(word => {
+                const data = vocabData[word];
+                // --- Sửa lại thành dòng này là xong xuôi luôn nha Pen ---
+                if (data.isParent || word.includes("하다") && word !== "생일 파티를 하다") return;
+
+                let nodeHTML = `
+                    <div class="node-item" id="prac_node_${word}" onclick="toggleTab3Word(event, '${word}')">
+                        <div class="practice-card-layout">
+                            <div class="practice-row-top">${data.meaning}</div>
+                            <div class="practice-row-bottom">
+                                <span id="prac_text_${word}" class="practice-korean-hidden">${word}</span>
+                                <button class="btn-audio-mini" onclick="playDirectAudio(event, '${word}')"></button>
+                            </div>
+                        </div>
+                    </div>`;
+
+                if (data.column === 1) document.getElementById('prac_content_1').innerHTML += nodeHTML;
+                else if (data.column === 2) document.getElementById('prac_content_2').innerHTML += nodeHTML;
+                else if (data.column === 3) {
+                    if (data.isChild) pracSubChildrenArea.innerHTML += nodeHTML;
+                    else col3Content.innerHTML += nodeHTML;
+                }
+            });
+
+            // Ép vector SVG cho nút loa ở Tab 3 tiệp màu xanh tím
+            document.querySelectorAll('#areaTab3 .btn-audio-mini').forEach(btn => {
+                btn.innerHTML = `<svg width="16" height="18" viewBox="0 0 24 24" fill="none" stroke="#614CFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 10 0 0 1 0 7.07"></path></svg>`;
+            });
+        }
+
+        // --- ĐIỀU KHÌÊN CHUYỂN TAB ẨN HIỆN PHÂN KHU ---
+        function switchTab(tabNum) {
+            currentTab = tabNum;
+            document.getElementById('btnTab1').classList.toggle('active', tabNum === 1);
+            document.getElementById('btnTab2').classList.toggle('active', tabNum === 2);
+            document.getElementById('btnTab3').classList.toggle('active', tabNum === 3);
+
+            // Sửa lỗi Sticky: Bật đúng chế độ block/flex để giải phóng layout 4:6 cố định
+            document.getElementById('areaTab12').style.display = (tabNum === 1 || tabNum === 2) ? 'flex' : 'none';
+            document.getElementById('areaTab3').style.display = tabNum === 3 ? 'flex' : 'none';
+
+            if (tabNum === 1 || tabNum === 2) {
+                document.querySelectorAll('.normal-txt').forEach(el => el.style.display = tabNum === 1 ? 'block' : 'none');
+                document.querySelectorAll('.student-quiz-area').forEach(el => el.style.display = tabNum === 2 ? 'block' : 'none');
+                
+                const title = document.getElementById('vocabTitle');
+                const mainAudio = document.getElementById('mainAudioBtn');
+                const meaning = document.getElementById('meaningRow');
+                const example = document.getElementById('exampleRow');
+                const imgContainer = document.getElementById('mainImageContainer');
+
+                if (tabNum === 2) {
+                    if(imgContainer) imgContainer.style.maxWidth = '360px'; // Thu nhỏ khung ảnh Tab 2
+                    if(title) title.style.display = 'none';
+                    if(mainAudio) mainAudio.style.display = 'none';
+                    if(meaning) meaning.style.display = 'none';
+                    if(example) example.style.display = 'none';
+                    updateStaticImage('생일');
+                } else {
+                    if(imgContainer) imgContainer.style.maxWidth = '450px'; // Trả về cỡ ảnh Tab 1
+                    if(title) title.style.display = 'block';
+                    if(mainAudio) mainAudio.style.display = 'block';
+                    if(meaning) meaning.style.display = 'flex';
+                    if(example) example.style.display = 'flex';
+                    selectStaticWord('생일');
+                }
+            } else if (tabNum === 3) {
+                buildTab3FolderStructure();
+            }
+        }
+
+        // --- XỬ LÝ LẬT CHỮ ẨN DANH & ĐỒNG BỘ GHIM ẢNH TAB 3 ---
+        function toggleTab3Word(event, word) {
+            // Ngăn chặn bấm nút loa lật nhầm chữ
+            if (event.target.closest('.btn-audio-mini') || event.target.closest('.parent-node') || event.target.tagName === 'svg' || event.target.tagName === 'path') return;
+            
+            const nodeItem = document.getElementById('prac_node_' + word);
+            if (nodeItem) nodeItem.classList.toggle('flipped-practice');
+
+            const data = vocabData[word];
+            if (data) {
+                const imgEl = document.getElementById('practiceVocabImage');
+                imgEl.src = data.img;
+                imgEl.setAttribute('onerror', `this.src='${data.placeholder}'`);
+            }
+        }
+
+        // SỬA TRIỆT ĐỂ: Hàm bọc đóng mở độc lập xử lý đóng mở cho mục sinh nhật ở Tab 3
+        function toggleTab3ParentFolder(event) {
+            event.stopPropagation();
+            if (event.target.closest('.btn-audio-mini') || event.target.tagName === 'svg' || event.target.tagName === 'path') return;
+
+            const folderBox = document.getElementById('prac_subGift');
+            if (folderBox) folderBox.classList.toggle('collapsed-sub');
+
+            const txt = document.getElementById('prac_text_생일 선물');
+            if (txt) {
+                txt.style.visibility = (txt.style.visibility === 'visible') ? 'hidden' : 'visible';
+            }
+
+            const data = vocabData['생일 선물'];
+            if (data) {
+                document.getElementById('practiceVocabImage').src = data.img;
+            }
+        }
+
+        // --- CÁC HÀM TƯƠNG TÁC CỦA TAB 1 & TAB 2 TĨNH NGUYÊN BẢN ---
+        function handleStaticNodeClick(word) {
+            if (currentTab === 1) selectStaticWord(word);
+        }
+
+        function handleNodeClick(word) {
+            if (currentTab === 1) selectStaticWord(word);
+        }
+
+        function selectStaticWord(word) {
+            document.querySelectorAll('.node-item').forEach(el => el.classList.remove('selected'));
+            
+            const targetNode = Array.from(document.querySelectorAll('.node-item')).find(el => {
+                const span = el.querySelector('.normal-txt');
+                return span && span.textContent.trim() === word;
+            });
+            if (targetNode) targetNode.classList.add('selected');
+
+            const data = vocabData[word];
+            if (data) {
+                document.getElementById('vocabTitle').textContent = word;
+                document.getElementById('vocabMeaning').textContent = data.meaning;
+                document.getElementById('vocabExample').textContent = data.example;
+                updateStaticImage(word);
+            }
+        }
+
+        function updateStaticImage(word) {
+            const data = vocabData[word];
+            if (data) {
+                const imgEl = document.getElementById('vocabImage');
+                imgEl.src = data.img;
+                imgEl.setAttribute('onerror', `this.src='${data.placeholder}'`);
+            }
+        }
+
+        function handleParentClick(event) {
+            event.stopPropagation();
+            document.getElementById('subGift').classList.toggle('collapsed-sub');
+            if (currentTab === 1) selectStaticWord('생일 선물');
+            else updateStaticImage('생일 선물');
+        }
+
+        // --- GAME CHECK CHÍNH TẢ TAB 2 ---
+        function focusQuiz(word) {
+            document.querySelectorAll('.node-item').forEach(el => el.classList.remove('active-quiz'));
+            const targetNode = document.getElementById('quiz_' + word).closest('.node-item');
+            if (targetNode) targetNode.classList.add('active-quiz');
+            updateStaticImage(word);
+        }
+
+        function checkQuiz(word) {
+            const inputEl = document.getElementById('quiz_' + word);
+            const nodeItem = inputEl.closest('.node-item');
+            if (!inputEl) return;
+
+            const userAns = inputEl.value.trim();
+
+            if (userAns === word) {
+                inputEl.style.color = "var(--purple-point)";
+                nodeItem.classList.remove('shake-error');
+                localStorage.setItem('quiz_save_' + word, userAns);
+            } else if (userAns !== "") {
+                inputEl.style.color = "red";
+                nodeItem.classList.remove('shake-error');
+                void nodeItem.offsetWidth; 
+                nodeItem.classList.add('shake-error');
+            }
+        }
+
+        function playDirectAudio(event, word) {
+            event.stopPropagation();
+            executeTTS(word);
+        }
+
+        // --- ĐỘNG CƠ PHÁT ÂM TIẾNG HÀN CHUẨN MICROSOFT ---
+        function executeTTS(textToSpeak) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'ko-KR';
+                utterance.rate = 0.85;
+
+                const voices = window.speechSynthesis.getVoices();
+                const preferredVoice = voices.find(voice => 
+                    (voice.name.includes('Microsoft') || voice.name.includes('Google')) && voice.lang.startsWith('ko')
+                ) || voices.find(voice => voice.lang.startsWith('ko'));
+
+                if (preferredVoice) utterance.voice = preferredVoice;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function playAudio(type) {
+            const word = document.getElementById('vocabTitle').textContent;
+            const text = type === 'word' ? word : document.getElementById('vocabExample').textContent;
+            executeTTS(text);
+        }
+
+        function toggleBranch(columnId) {
+            document.getElementById(columnId).classList.toggle('collapsed');
+        }
+
+        function checkAccess() {
+            const passwordInput = document.getElementById('passwordInput').value;
+            const lockScreen = document.getElementById('lockScreen');
+            const lockMessage = document.getElementById('lockMessage');
+
+            if (passwordInput === "2607") {
+                lockScreen.style.display = "none";
+                Object.keys(vocabData).forEach(word => {
+                    const savedVal = localStorage.getItem('quiz_save_' + word);
+                    const inputEl = document.getElementById('quiz_' + word);
+                    if (savedVal && inputEl) {
+                        inputEl.value = savedVal;
+                        inputEl.style.color = "var(--purple-point)";
+                    }
+                });
+                switchTab(1); 
+            } else {
+                lockMessage.textContent = "Sai mật khẩu rồi, thử lại nhé học viên ơi! ❌";
+                lockMessage.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
